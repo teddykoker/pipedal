@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Guitar Pedal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <h1>Fuzz</h1>
+    <input type="range" min="0" max="511" value="0" id="slider" />
+    <script>
+      const slider = document.getElementById("slider");
+      const loc = window.location;
+      const url = loc.protocol === "https:" ? "wss://" : "ws://";
+      const ws = new WebSocket(url + loc.host + loc.pathname + "websocket");
+      ws.onopen = function() {
+        ws.send("0");
+      };
+      ws.onmessage = function(event) {
+        console.log(event.data);
+      };
+
+      slider.oninput = function() {
+        ws.send(this.value);
+      };
+    </script>
+  </body>
+</html>
