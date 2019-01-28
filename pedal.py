@@ -5,7 +5,7 @@ import tornado.websocket
 import spidev
 
 root = os.path.dirname(__file__)
-port = 8080
+port = 80
 
 spi = spidev.SpiDev()
 spi.open(0, 0)
