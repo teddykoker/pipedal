@@ -8,9 +8,12 @@
   </head>
   <body>
     <h1>Fuzz</h1>
-    <input type="range" min="0" max="511" value="0" id="slider" />
+    <input type="range" min="0" max="511" value="0" id="fuzz" />
+    <h1>Volume</h1>
+    <input type="range" min="0" max="511" value="0" id="volume" />
     <script>
-      const slider = document.getElementById("slider");
+      const fuzz = document.getElementById("fuzz");
+      const volume = document.getElementById("volume");
       const loc = window.location;
       const url = loc.protocol === "https:" ? "wss://" : "ws://";
       const ws = new WebSocket(url + loc.host + loc.pathname + "websocket");
@@ -21,8 +24,12 @@
         console.log(event.data);
       };
 
-      slider.oninput = function() {
-        ws.send(this.value);
+      fuzz.oninput = function() {
+        ws.send([0, this.value]);
+      };
+
+      volume.oninput = function() {
+        ws.send([1, this.value]);
       };
     </script>
   </body>

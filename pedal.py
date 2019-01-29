@@ -28,7 +28,7 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
     def on_message(self, message):
         print message
         try:
-	        write_pot(0, int(message))
+	        write_pot(int(message[0]), int(message[1]))
         except Exception:
             pass
 
