@@ -8,11 +8,13 @@ import spidev
 root = os.path.dirname(__file__)
 port = 80
 
-spi = spidev.SpiDev()
-spi.open(0, 0)
-spi.max_speed_hz = 976000
+spis = [spidev.SpiDev(), spidev.SpiDev()]
+spis[0].open(0, 0)
+spis[1].open(0, 1)
+spis[0].max_speed_hz = 976000
+spis[1].max_speed_hz = 976000
 
-def write_pot(input):
+def write_pot(spi_num, input):
     msb = input >> 8
     lsb = input & 0xFF
     spi.xfer([msb, lsb])
@@ -26,7 +28,7 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
     def on_message(self, message):
         print message
         try:
-	        write_pot(int(message))
+	        write_pot(0, int(message))
         except Exception:
             pass
 
