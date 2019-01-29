@@ -14,10 +14,12 @@ spis[1].open(0, 1)
 spis[0].max_speed_hz = 976000
 spis[1].max_speed_hz = 976000
 
+
 def write_pot(spi_num, input):
     msb = input >> 8
     lsb = input & 0xFF
     spis[spi_num].xfer([msb, lsb])
+
 
 class SocketHandler(tornado.websocket.WebSocketHandler):
     connections = set()
@@ -26,9 +28,9 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
         self.connections.add(self)
 
     def on_message(self, message):
-        print message
+        message = message.split(",")
         try:
-	        write_pot(int(message[0]), int(message[1]))
+            write_pot(int(message[0]), int(message[1]))
         except Exception:
             pass
 
