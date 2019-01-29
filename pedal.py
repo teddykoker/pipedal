@@ -17,7 +17,7 @@ spis[1].max_speed_hz = 976000
 def write_pot(spi_num, input):
     msb = input >> 8
     lsb = input & 0xFF
-    spi.xfer([msb, lsb])
+    spis[spi_num].xfer([msb, lsb])
 
 class SocketHandler(tornado.websocket.WebSocketHandler):
     connections = set()
