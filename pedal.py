@@ -4,6 +4,12 @@ import tornado.ioloop
 import tornado.web
 import tornado.websocket
 import spidev
+import RPi.GPIO as GPIO
+
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+GPIO.setup(18, GPIO.OUT)
 
 root = os.path.dirname(__file__)
 port = 80
@@ -28,6 +34,11 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
         self.connections.add(self)
 
     def on_message(self, message):
+        if message == "on":
+            GPIO.output(18, GPIO.HIGH)
+        if message == "off":
+            GPIO.output(18, GPIO.LOW)
+
         message = message.split(",")
         try:
             write_pot(int(message[0]), int(message[1]))

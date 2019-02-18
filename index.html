@@ -3,34 +3,267 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Guitar Pedal</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Lobster"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      #app {
+        height: 100vh;
+        background-color: #dedede;
+        font-family: sans-serif;
+      }
+
+      .pedal {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        width: 250px;
+        height: 400px;
+        padding: 6px;
+        background: #6063f3;
+        border-radius: 20px;
+        box-shadow: inset 0px 0px 30px 1px rgba(0, 0, 0, 0.22);
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+      }
+      .knobs {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-bottom: 40px;
+      }
+
+      .knob {
+        cursor: pointer;
+
+        position: relative;
+        height: 100px;
+        width: 100px;
+        border-radius: 50%;
+        background: rgb(61, 61, 61);
+      }
+
+      .knob:before {
+        content: "";
+        position: absolute;
+        top: 0px;
+        left: 50%;
+        width: 4px;
+        height: 40px;
+        background: #fff;
+      }
+
+      .centered {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        height: 60%;
+        flex-direction: column;
+        flex-grow: 1;
+      }
+      .name {
+        font-family: Lobster;
+        font-size: 40px;
+      }
+
+      .toggle {
+        cursor: pointer;
+        position: relative;
+        background: #888;
+        height: 47px;
+        width: 47px;
+        border-radius: 50%;
+        box-shadow: inset 0 0 25px #dedede,
+          inset -2px -2px 1px rgba(0, 0, 0, 0.25);
+        background-image: -webkit-radial-gradient(
+            50% 0%,
+            8% 50%,
+            rgba(255, 255, 255, 0.5) 0%,
+            rgba(255, 255, 255, 0) 100%
+          ),
+          -webkit-radial-gradient(50% 100%, 12% 50%, rgba(255, 255, 255, 0.6) 0%, rgba(
+                  255,
+                  255,
+                  255,
+                  0
+                )
+                100%),
+          -webkit-radial-gradient(0% 50%, 50% 7%, rgba(255, 255, 255, 0.5) 0%, rgba(
+                  255,
+                  255,
+                  255,
+                  0
+                )
+                100%),
+          -webkit-radial-gradient(100% 50%, 50% 5%, rgba(255, 255, 255, 0.5) 0%, rgba(
+                  255,
+                  255,
+                  255,
+                  0
+                )
+                100%),
+          -webkit-repeating-radial-gradient(50% 50%, 100% 100%, rgba(0, 0, 0, 0)
+                0%, rgba(0, 0, 0, 0) 3%, rgba(0, 0, 0, 0.1) 3.5%),
+          -webkit-repeating-radial-gradient(50% 50%, 100% 100%, rgba(
+                  255,
+                  255,
+                  255,
+                  0
+                )
+                0%, rgba(255, 255, 255, 0) 6%, rgba(255, 255, 255, 0.1) 7.5%),
+          -webkit-repeating-radial-gradient(50% 50%, 100% 100%, rgba(
+                  255,
+                  255,
+                  255,
+                  0
+                )
+                0%, rgba(255, 255, 255, 0) 1.2%, rgba(255, 255, 255, 0.2) 2.2%),
+          -webkit-radial-gradient(50% 50%, 200% 50%, #e6e6e6 5%, #d9d9d9 30%, #999999
+                100%);
+      }
+
+      .led {
+        width: 20px;
+        height: 20px;
+        background: #ff0000;
+        border-radius: 50%;
+        box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.75) inset,
+          0 0 2px 0px rgba(0, 0, 0, 0.75);
+      }
+
+      .label-fuzz,
+      .label-volume {
+        text-align: center;
+        position: absolute;
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      .label-fuzz {
+        top: 150px;
+        right: 45px;
+      }
+
+      .label-volume {
+        top: 150px;
+        left: 34px;
+      }
+    </style>
+    <script src="https://unpkg.com/vue"></script>
   </head>
   <body>
-    <h1>Fuzz</h1>
-    <input type="range" min="204" max="256" value="0" id="fuzz" />
-    <h1>Volume</h1>
-    <input type="range" min="0" max="256" value="0" id="volume" />
+    <div
+      id="app"
+      @mouseup="volumeSelected = false; fuzzSelected = false"
+      @mousemove="mousemove"
+    >
+      <div class="pedal">
+        <div class="knobs">
+          <div
+            class="knob"
+            @mousedown="volumeSelected = true; y = $event.pageY; $event.preventDefault()"
+            :style="{transform: 'rotate(' + volumeValue + 'deg)'}"
+          ></div>
+          <div
+            class="knob"
+            @mousedown="fuzzSelected = true; y = $event.pageY; $event.preventDefault()"
+            :style="{transform: 'rotate(' + fuzzValue + 'deg)'}"
+          ></div>
+        </div>
+        <div class="label-volume">
+          Volume
+        </div>
+        <div class="label-fuzz">
+          Fuzz
+        </div>
+        <div class="centered">
+          <div
+            class="led"
+            :style="{'background-color': on ? 'red' : 'gray'}"
+          ></div>
+          <div class="toggle" @click="toggle"></div>
+          <div class="name">Fuzz</div>
+        </div>
+      </div>
+    </div>
+
     <script>
-      const fuzz = document.getElementById("fuzz");
-      const volume = document.getElementById("volume");
-      const loc = window.location;
-      const url = loc.protocol === "https:" ? "wss://" : "ws://";
-      const ws = new WebSocket(url + loc.host + loc.pathname + "websocket");
-      ws.onopen = function() {
-        ws.send("0");
-      };
-      ws.onmessage = function(event) {
-        console.log(event.data);
-      };
-
-      fuzz.oninput = function() {
-        ws.send([0, this.value]);
-      };
-
-      volume.oninput = function() {
-        ws.send([1, this.value]);
-      };
+      var app = new Vue({
+        el: "#app",
+        data() {
+          return {
+            on: true,
+            volumeSelected: false,
+            fuzzSelected: false,
+            volumeValue: 0,
+            fuzzValue: 0,
+            y: 0,
+            ws: null
+          };
+        },
+        mounted: function() {
+          const loc = window.location;
+          const url = loc.protocol === "https:" ? "wss://" : "ws://";
+          this.ws = new WebSocket(url + loc.host + loc.pathname + "websocket");
+        },
+        watch: {
+          volumeValue: function(val) {
+            const volume = ((val + 132) * 256) / (132 + 132);
+            console.log(volume);
+            this.ws.send([1, volume]);
+          },
+          fuzzValue: function(val) {
+            const fuzz = ((val + 132) * (256 - 204)) / (132 + 132) + 204;
+            console.log(fuzz);
+            this.ws.send([0, fuzz]);
+          },
+          on: function(val) {
+            if (val) {
+              this.ws.send("on");
+            } else {
+              this.ws.send("off");
+            }
+          }
+        },
+        methods: {
+          toggle: function() {
+            this.on = !this.on;
+          },
+          mousemove: function(event) {
+            if (this.volumeSelected) {
+              this.volumeValue -= event.pageY - this.y;
+              if (this.volumeValue > 132) {
+                this.volumeValue = 132;
+              }
+              if (this.volumeValue < -132) {
+                this.volumeValue = -132;
+              }
+            } else if (this.fuzzSelected) {
+              this.fuzzValue -= event.pageY - this.y;
+              if (this.fuzzValue > 132) {
+                this.fuzzValue = 132;
+              }
+              if (this.fuzzValue < -132) {
+                this.fuzzValue = -132;
+              }
+            }
+            this.y = event.pageY;
+          }
+        }
+      });
     </script>
   </body>
 </html>
