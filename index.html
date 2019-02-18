@@ -223,12 +223,12 @@
           volumeValue: function(val) {
             const volume = ((val + 132) * 256) / (132 + 132);
             console.log(volume);
-            this.ws.send([1, volume]);
+            this.ws.send([1, parseInt(volume)]);
           },
           fuzzValue: function(val) {
             const fuzz = ((val + 132) * (256 - 204)) / (132 + 132) + 204;
             console.log(fuzz);
-            this.ws.send([0, fuzz]);
+            this.ws.send([0, parseInt(fuzz)]);
           },
           on: function(val) {
             if (val) {
